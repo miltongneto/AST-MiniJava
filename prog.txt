@@ -1,0 +1,6 @@
+class BinarySearch {
+	public static void main(String[] a){
+	int x = 10;
+	int y = x + x;
+	}
+}
