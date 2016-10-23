@@ -1,6 +1,6 @@
 grammar mvgn;
 
-INTEGER:				'0' |[1-9] ;
+INTEGER:				[0-9]+ ;
 IDENTIFIER:			 	[a-zA-Z]+ (INTEGER)*;
 WHITESPACE:				[' \r\n\t']+ -> skip;
 OP:						('&&' | '<' | '+' | '-' | '*') ;
@@ -10,7 +10,7 @@ goal:					mainClass (classDecl)* EOF;
 mainClass:				'class' IDENTIFIER '{' 'public' 'static' 'void' 'main' 
 						'(' 'String' '[' ']' IDENTIFIER ')' '{' statement '}' '}';
 
-classDecl:				'class' IDENTIFIER (varDecl)* (methodDecl)* 
+classDecl:				'class' IDENTIFIER '{' (varDecl)* (methodDecl)* '}'
 						| 'class' IDENTIFIER ('extends' IDENTIFIER) '{'(varDecl)* (methodDecl)*'}' 
 						; 
 					
@@ -32,7 +32,7 @@ exp:					exp OP exp
 						| IDENTIFIER
 						| 'this'
 						| 'new' 'int' '['exp']'
-						| 'new' IDENTIFIER '('')'
+						| 'new' IDENTIFIER '(' ')'
 						| '!' exp
 						| '(' exp ')'
 						;
@@ -43,7 +43,7 @@ expRest:				',' exp ;
 
 varDecl: 				type IDENTIFIER ';' ;
 
-methodDecl:				'public' type IDENTIFIER (formalList)  '{'(varDecl)* (methodDecl)* 'return' exp ';' '}' ;
+methodDecl:				'public' type IDENTIFIER '(' formalList ')'  '{'(varDecl)* (statement)* 'return' exp ';' '}' ;
 
 formalList:				type IDENTIFIER (',' formal)*;
 

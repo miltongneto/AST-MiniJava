@@ -41,7 +41,6 @@ public class BuilderAST {
 		Identifier i = new Identifier(null);
 		if(id !=null){
 			String str = id.toString();
-			System.out.println(str);
 			i = new Identifier(str);
 		}
 		
@@ -50,19 +49,20 @@ public class BuilderAST {
 	
 	public Statement returnStatement(StatementContext ctx){
 		Statement result = null;
+		
 		if(ctx.isEmpty()) result = null;
-		else if(ctx.getChild(0).getText().equals("{")){
-			result = returnBlockStatement(ctx.statement());
+		else if(ctx.exp().size() == 2){
+			result = returnArrayAssing(ctx.IDENTIFIER(), ctx.exp(0), ctx.exp(1));
 		}else if(ctx.getChild(0).getText().equals("if")){
 			result = returnIfStatement(ctx);
 		}else if(ctx.getChild(0).getText().equals("while")){
 			result = returnWhileStatement(ctx);
 		}else if(ctx.getChild(0).getText().equals("System.out.println")){
 			result = new Print(returnExp(ctx.exp(0)));				
-		}else if(ctx.getChild(1).getText().equals("=")){
+		}else if(ctx.getChild(1).getText().equals("=") || ctx.getChild(2).getText().equals("=")){
 			result = returnAssignStatement(ctx.IDENTIFIER(), ctx.exp(0));
 		}else{
-				result = returnArrayAssing(ctx.IDENTIFIER(), ctx.exp(0), ctx.exp(1));
+			result = returnBlockStatement(ctx.statement());
 		}
 		return result;
 	}
@@ -155,7 +155,7 @@ public class BuilderAST {
 		Identifier id = returnIdentifier(ctx.IDENTIFIER());
 		VarDeclList varList = returnVarDeclList(ctx.varDecl());
 		FormalList formalList = returnFormalList(ctx.formalList());
-		StatementList stList = returnStatementList(null); 			//CORRIGIR!!!		
+		StatementList stList = returnStatementList(ctx.statement()); 	
 		Exp exp = returnExp(ctx.exp());
 		return new MethodDecl(type, id, formalList, varList, stList, exp);
 	}

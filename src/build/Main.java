@@ -28,9 +28,9 @@ public class Main {
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
 		mvgnParser parser = new mvgnParser(tokens);
 		
-		BuilderAST build = new BuilderAST();
+		BuilderAST build = new BuilderAST();	// Classe responsavel por fazer o mapeamento da ClassContext para a Class desejada
 		
-		Program prog = build.returnGoal(parser.goal());
+		Program prog = build.returnGoal(parser.goal());		// Retorna um Program
 	
 		PrettyPrintVisitor print = new PrettyPrintVisitor();
 		
