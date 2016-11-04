@@ -18,19 +18,29 @@ public class SymbolTable {
 		hashtable = new Hashtable<Object, Object>();
 	}
 
-	public boolean addClass(String id, String parent) {
-		if (containsClass(id))
+//	public boolean addClass(String id, String parent) {
+//		if (containsClass(id))
+//			return false;
+//		else
+//			hashtable.put(id, new Class(id, parent));
+//		return true;
+//	}
+	
+	// meu metodo addClass
+	public boolean addClass(Class c) {
+		if (containsClass(c.id))
 			return false;
 		else
-			hashtable.put(id, new Class(id, parent));
+			hashtable.put(c.id, c);
 		return true;
 	}
 
 	public Class getClass(String id) {
-		if (containsClass(id))
-			return (Class) hashtable.get(id);
-		else
-			return null;
+		if(id != null){
+			if (containsClass(id))
+				return (Class) hashtable.get(id);
+		}
+		return null;
 	}
 
 	public boolean containsClass(String id) {
@@ -61,6 +71,31 @@ public class SymbolTable {
 
 		System.out.println("Variavel " + id + " nao definida no escopo atual");
 		System.exit(0);
+		return null;
+	}
+	
+	public Type getVar(Method m, Class c, String id) {
+		if (m != null) {
+			if (m.getVar(id) != null) {
+				return m.getVar(id).type();
+			}
+			if (m.getParam(id) != null) {
+				return m.getParam(id).type();
+			}
+		}
+
+		while (c != null) {
+			if (c.getVar(id) != null) {
+				return c.getVar(id).type();
+			} else {
+				if (c.parent() == null) {
+					c = null;
+				} else {
+					c = getClass(c.parent());
+				}
+			}
+		}
+
 		return null;
 	}
 
@@ -145,180 +180,3 @@ public class SymbolTable {
 	}
 
 }// SymbolTable
-
-public class Class {
-
-	String id;
-	Hashtable<Object, Method> methods;
-	Hashtable<Object, Variable> globals;
-	String parent;
-	Type type;
-
-	public Class(String id, String p) {
-		this.id = id;
-		parent = p;
-		type = new IdentifierType(id);
-		methods = new Hashtable<Object, Method>();
-		globals = new Hashtable<Object, Variable>();
-	}
-
-	public Class() {
-	}
-
-	public String getId() {
-		return id;
-	}
-
-	public Type type() {
-		return type;
-	}
-
-	public boolean addMethod(String id, Type type) {
-		if (containsMethod(id))
-			return false;
-		else {
-			methods.put(id, new Method(id, type));
-			return true;
-		}
-	}
-
-	public Enumeration getMethods() {
-		return methods.keys();
-	}
-
-	public Method getMethod(String id) {
-		if (containsMethod(id))
-			return (Method) methods.get(id);
-		else
-			return null;
-	}
-
-	public boolean addVar(String id, Type type) {
-		if (globals.containsKey(id))
-			return false;
-		else {
-			globals.put(id, new Variable(id, type));
-			return true;
-		}
-	}
-
-	public Variable getVar(String id) {
-		if (containsVar(id))
-			return (Variable) globals.get(id);
-		else
-			return null;
-	}
-
-	public boolean containsVar(String id) {
-		return globals.containsKey(id);
-	}
-
-	public boolean containsMethod(String id) {
-		return methods.containsKey(id);
-	}
-
-	public String parent() {
-		return parent;
-	}
-} // Class
-
-public class Variable {
-
-	String id;
-	Type type;
-
-	public Variable(String id, Type type) {
-		this.id = id;
-		this.type = type;
-	}
-
-	public String id() {
-		return id;
-	}
-
-	public Type type() {
-		return type;
-	}
-
-} // Variable
-
-public class Method {
-
-	String id;
-	Type type;
-	Vector<Variable> params;
-	Hashtable<Object, Variable> vars;
-
-	public Method(String id, Type type) {
-		this.id = id;
-		this.type = type;
-		vars = new Hashtable<Object, Variable>();
-		params = new Vector<Variable>();
-	}
-
-	public String getId() {
-		return id;
-	}
-
-	public Type type() {
-		return type;
-	}
-
-	public boolean addParam(String id, Type type) {
-		if (containsParam(id))
-			return false;
-		else {
-			params.addElement(new Variable(id, type));
-			return true;
-		}
-	}
-
-	public Enumeration getParams() {
-		return params.elements();
-	}
-
-	public Variable getParamAt(int i) {
-		if (i < params.size())
-			return (Variable) params.elementAt(i);
-		else
-			return null;
-	}
-
-	public boolean addVar(String id, Type type) {
-		if (vars.containsKey(id))
-			return false;
-		else {
-			vars.put(id, new Variable(id, type));
-			return true;
-		}
-	}
-
-	public boolean containsVar(String id) {
-		return vars.containsKey(id);
-	}
-
-	public boolean containsParam(String id) {
-		for (int i = 0; i < params.size(); i++)
-			if (((Variable) params.elementAt(i)).id.equals(id))
-				return true;
-		return false;
-	}
-
-	public Variable getVar(String id) {
-		if (containsVar(id))
-			return (Variable) vars.get(id);
-		else
-			return null;
-	}
-
-	public Variable getParam(String id) {
-
-		for (int i = 0; i < params.size(); i++)
-			if (((Variable) params.elementAt(i)).id.equals(id))
-				return (Variable) (params.elementAt(i));
-
-		return null;
-	}
-
-} // Method
-

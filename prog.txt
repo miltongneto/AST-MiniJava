@@ -1,16 +1,69 @@
-class Prog {
-	public static void main(String[] a){
-		Teste t  = new Teste();
-	}
-}
 class Teste{
-	int a;
-	int b;
+    public static void main(String[] a){
+	System.out.println(new A().Start(10));
+	
+    }
+}
 
-	public Teste(){
-	}	
-	public int soma(int n1, int n2){
-		int res = n1 + n2;
-		return res;
+
+class A{  
+    public int Start(int var){
+		
+		return 999 ;
+    }
+    public boolean BoolTeste(boolean a){
+    	boolean result ;
+    	if(10 < 5) { 
+    		result = true ;
+    	} else {
+    		result = false ;
+    	}
+    	return result;
+    }
+     
+    public int testando () {
+    	boolean bb ;
+    	bb = BoolTeste (true) ;
+    	return 1 ;
+    }
+    
+    public int fibonacci(int n){
+    	int result1 ;
+    	int result2 ;
+    	if(n<2){
+    		result1 = 1 ;
+    		result2 = 0 ;
+    	} else {
+    		result1 = this.fibonacci(n-1) ;
+    		result2 = this.fibonacci(n-2) ;
+  		}
+  		return result1 + result2 ;
+    }
+    
+
+    
+
+}
+
+class B{
+	int aux01 ;
+	
+	public boolean Funcao(){
+		A a ;
+		B b ;
+		int t ;
+		boolean bool ;
+			
+		b = new B();
+		a = new A();
+		
+		while( t < ( 5 + 3 ) ) {
+			System.out.println(t) ;
+		}
+		
+		t = a.Start(1) + aux01 ;
+		bool = a.BoolTeste(false) ;
+		
+		return true;
 	}
 }

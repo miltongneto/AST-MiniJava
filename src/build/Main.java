@@ -10,9 +10,13 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 
 import ast.Program;
+import sourceParser.gramaticaLexer;
+import sourceParser.gramaticaParser;
 import sources.mvgnLexer;
 import sources.mvgnParser;
+import visitor.BuildSymbolTableVisitor;
 import visitor.PrettyPrintVisitor;
+import visitor.TypeCheckVisitor;
 
 public class Main {
 
@@ -24,19 +28,19 @@ public class Main {
 	    */
 		FileInputStream is = new FileInputStream("prog.txt");
 		ANTLRInputStream input = new ANTLRInputStream(is);
-		mvgnLexer lexer = new mvgnLexer(input);
+		gramaticaLexer lexer = new gramaticaLexer(input);
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
-		mvgnParser parser = new mvgnParser(tokens);
+		gramaticaParser parser = new gramaticaParser(tokens);
 		
-		BuilderAST build = new BuilderAST();	// Classe responsavel por fazer o mapeamento da ClassContext para a Class desejada
+		BuildASTcorreto build = new BuildASTcorreto();	// Classe responsavel por fazer o mapeamento da ClassContext para a Class desejada
 		
-		Program prog = build.returnGoal(parser.goal());		// Retorna um Program
+		Program prog = build.visitGoal(parser.goal());		// Retorna um Program
 	
 		PrettyPrintVisitor print = new PrettyPrintVisitor();
-		
-		prog.accept(print);
-		
-
-	}
+		BuildSymbolTableVisitor buildTable = new BuildSymbolTableVisitor();
+		//prog.accept(print);
+		prog.accept(buildTable);
+		prog.accept(new TypeCheckVisitor(buildTable.getSymbolTable()));
+}
 
 }
